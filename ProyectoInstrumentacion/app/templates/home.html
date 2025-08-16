@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="home.css">
+    <title>IceBackUp</title>
+</head>
+<body>
+    <section>
+        <h1>Bienvenidos al proyecto de instrumentacion Industrial</h1>
+    </section>
+
+    <section>
+        <form method="POST">
+            <label>Set Temp: <input type="number" name="setTemp" value="{{ setTemp }}"></label>
+            <label>Set Nivel: <input type="number" name="setNivel" value="{{ setNivel }}"></label>
+        <button type="submit">Actualizar</button>
+</form>
+    </section>
+    
+    <section>
+        <table>
+    <thead>
+        <tr>
+            {% if registros and registros[0] %}
+                {% for columna in registros[0].keys() %}
+                    <th>{{ columna }}</th>
+                {% endfor %}
+            {% else %}
+                <th>ID</th>
+                <th>Temperatura</th>
+                <th>Caudal</th>
+                <th>Nivel</th>
+                <th>Posicion</th>
+                <th>Paro</th>
+                <th>Finalizado</th>
+                <th>Fecha</th>
+            {% endif %}
+        </tr>
+    </thead>
+    <tbody>
+        {% if registros %}
+            {% for registro in registros %}
+                <tr>
+                    {% for valor in registro.values() %}
+                        <td>{{ valor }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="5" style="text-align: center;">No hay registros disponibles</td>
+            </tr>
+        {% endif %}
+    </tbody>
+</table>
+    </section>
+</body>
+</html>
