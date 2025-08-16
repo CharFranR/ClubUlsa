@@ -23,6 +23,11 @@
             <button type="submit">Actualizar</button>
         </form>
     </section>
+
+    <section>
+        <h3>Lecturas de Temperatura</h3>
+        <div id="temperaturas"></div>
+    </section>
     
     <!-- Tabla de registros -->
     <section>
@@ -92,5 +97,30 @@
         // actualizar cada 2 segundos
         setInterval(cargarDatos, 500);
     </script>
+
+    <script>
+function actualizarUltimaTemperatura() {
+    fetch('/datos')
+        .then(res => res.json())
+        .then(data => {
+            let divTemp = document.getElementById("temperaturas");
+            divTemp.innerHTML = ""; // limpiar contenido
+
+            if (data.length === 0) {
+                divTemp.textContent = "No hay datos disponibles";
+                return;
+            }
+
+            // Tomar solo el primer registro (el más reciente)
+            let ultimo = data[0];
+            divTemp.textContent = `Última temperatura: ${ultimo.temperatura} °C (Registro ${ultimo.id})`;
+        });
+}
+
+// Actualizar cada 2 segundos
+setInterval(actualizarUltimaTemperatura, 500);
+actualizarUltimaTemperatura();
+</script>
+
 </body>
 </html>
