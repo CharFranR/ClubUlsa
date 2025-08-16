@@ -3,7 +3,7 @@ import time
 import requests
 from datetime import datetime
 
-SERIAL_PORT = 'COM8'
+SERIAL_PORT = 'COM11'
 BAUD_RATE = 115200
 API_URL = 'http://localhost:5001/insertar'
 CONFIG_URL = 'http://localhost:5001/config'

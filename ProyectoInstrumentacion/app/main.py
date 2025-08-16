@@ -46,5 +46,12 @@ def home():
 
     return render_template('home.html', registros=data, setTemp=setTemp, setNivel=setNivel)
 
+@app.route('/datos')
+def datos():
+    success, data = mostrar_registros(db)
+    if not success:
+        return jsonify({"error": data}), 500
+    return jsonify(data)
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
