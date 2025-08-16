@@ -1,12 +1,17 @@
 from flask import Flask, render_template, request, redirect
-from db_ops import init_db, mostrar_registros, insertar_registro, eliminar_tabla_registros
+from db_ops import init_db, mostrar_registros, insertar_registro, eliminar_tabla_registros, admin
 from ops import verificar_ruta, obtener_tamanio, copiar_a_documentos
 from datetime import datetime
 
 app = Flask(__name__)
 db = init_db()
 db.crear_tablas()
+usuario = 'Oscar'
+contrasenia = '123'
+id = admin(db, usuario, contrasenia)
 
+
+###Paginas visitables
 @app.route('/', methods=['GET', 'POST'])
 
 def home():
@@ -22,6 +27,16 @@ def home():
 
     return render_template('home.html', registros=data)
 
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    return render_template('login.html')
+
+@app.route('/singin', methods=['GET', 'POST'])
+def singin():
+    return render_template('singin.html')
+
+
+###Direcciones de funciones
 @app.route('/procesar', methods=['GET', 'POST'])
 def procesar_formulario():
     direccion = request.form.get('direccion')
@@ -39,6 +54,7 @@ def procesar_formulario():
 
     resultado = insertar_registro(
         db=db,
+        usuario=id,
         nombre=nombre,
         tipo=tipo,
         tamanio=tamanio,
@@ -57,6 +73,25 @@ def realizar_respaldo(direccion):
 
     if not copiar:
         return f"Error al copiar", 400
+
+
+@app.route('/ProcesarLogin', methods=['GET', 'POST'])
+def validar_credenciales():
+    return redirect('/')
+
+@app.route('/ProcesarSingIn', methods=['GET', 'POST'])
+def crear_usuario():
+    return redirect('/')
+
+
+@app.route('/redireccionar_singin', methods=['GET', 'POST'])
+def redireccionar_singin():
+    return redirect('/singin')
+
+@app.route('/redireccionar_login', methods=['GET', 'POST'])
+def redireccionar_login():
+    return redirect('/login')
+
 
 @app.route('/borrar_registros',  methods=['GET', 'POST'])
 def borrar_registros():

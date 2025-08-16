@@ -3,7 +3,11 @@ services:
     build: .
     volumes:
       - ./app:/app
-      - /c/Users/oscar:/host_home                   # Carpeta personal completa (opcional)
+      - /c/Users/oscar:/host_home    
+      - /c/Users/oscar/Documents:/host_documents
+      - /c/Users/oscar/Documents:/desktop
+      - /c/Users/oscar/Documents:/pictures
+
     depends_on:
       - db
     environment:
