@@ -5,11 +5,32 @@ def init_db():
     """Inicializa la conexión a la base de datos"""
     return Database()
 
-def insertar_registro(db, nombre, tipo,  tamanio, accion, direccion, fecha):
+def admin(db, usuario, contrasenia):
+    try:
+        id_usuario = obtener_id_usuario(db, usuario)
+        if id_usuario:
+            return id_usuario
+        query = """
+        INSERT INTO usuarios (usuario, contrasenia)
+        VALUES (%s, %s)
+        RETURNING id
+        """
+        with db.conectar () as conn:
+            with conn.cursor() as cur:
+                cur.execute(query, (usuario, contrasenia))
+                registro_id = cur.fetchone()[0]
+                conn.commit()
+        return registro_id
+
+    except Exception as e:
+        print(f"Error al insertar registro: {e}")
+        return None
+
+def insertar_registro(db, usuario, nombre, tipo,  tamanio, accion, direccion, fecha):
     try:
         query = """
-        INSERT INTO registros (nombre, tipo, tamanio, accion, direccion, fecha)
-        VALUES (%s, %s, %s, %s, %s, %s)
+        INSERT INTO registros (nombre, id_usuarios, tipo, tamanio, accion, direccion, fecha)
+        VALUES (%s, %s, %s, %s, %s, %s, %s)
         RETURNING id
         """
         
@@ -17,7 +38,7 @@ def insertar_registro(db, nombre, tipo,  tamanio, accion, direccion, fecha):
         
         with db.conectar() as conn:
             with conn.cursor() as cur:
-                cur.execute(query, (nombre, tipo, tamanio, accion, direccion, fecha_parsed))
+                cur.execute(query, (nombre, usuario, tipo, tamanio, accion, direccion, fecha_parsed))
                 registro_id = cur.fetchone()[0]
                 conn.commit()
                 
@@ -94,3 +115,14 @@ def mostrar_registros(db, filtro_id=None):
                 
     except Exception as e:
         return (False, f"Error al leer registros: {e}")
+    
+
+def obtener_id_usuario(db, usuario):
+    query = "SELECT id FROM usuarios WHERE usuario = %s"
+    with db.conectar() as conn:
+        with conn.cursor() as cur:
+            cur.execute(query, (usuario,))
+            result = cur.fetchone()
+        if result:
+            return result[0]
+        return None
